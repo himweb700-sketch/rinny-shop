@@ -43,17 +43,25 @@ CREATE TABLE IF NOT EXISTS orders(
 );
 `);
 
-const count = db.prepare("SELECT COUNT(*) c FROM products").get().c;
-if (!count) {
-  const add = db.prepare("INSERT INTO products(name,description,price,icon) VALUES(?,?,?,?)");
-  [["Kawaii Server","เซิร์ฟเวอร์น่ารัก พร้อมคอมมูนิตี้อบอุ่น",1500,"🐱"],
-   ["Gaming Server","เซิร์ฟเวอร์สายเกม พร้อมห้องกิจกรรม",800,"🎮"],
-   ["Chill Community","พื้นที่พูดคุยชิล ๆ หาเพื่อนและทำกิจกรรม",999,"🌸"],
-   ["Server Setup","ช่วยจัดหมวด ห้อง และพื้นฐานเซิร์ฟเวอร์",399,"🛠️"]]
-   .forEach(x=>add.run(...x));
-}
+const count = db.prepare("SELECT COUNT(*) AS c FROM products").get();
 
-const adminIds = () => (process.env.ADMIN_DISCORD_IDS||"").split(",").map(x=>x.trim()).filter(Boolean);
+if (count.c === 0) {
+  const add = db.prepare(`
+    INSERT INTO products (name, description, price, icon)
+    VALUES (?, ?, ?, ?)
+  `);
+
+  const products = [
+    ["Kawaii Server", "เซิร์ฟเวอร์น่ารัก พร้อมคอมมูนิตี้อบอุ่น", 150, "✨"],
+    ["Gaming Server", "เซิร์ฟเวอร์สายเกม พร้อมห้องกิจกรรม", 800, "🎮"],
+    ["Chill Community", "พื้นที่พูดคุยชิล ๆ หาเพื่อนและทำกิจกรรม", 300, "🌿"],
+    ["Server Setup", "ช่วยจัดหมวด ห้อง และพื้นฐานเซิร์ฟเวอร์", 399, "🛠️"]
+  ];
+
+  for (const product of products) {
+    add.run(...product);
+  }
+}name,ame,description,price,constminIds = () => (process.env.ADMIN_DISCORD_IDS||"").split(",").map(x=>x.trim()).filter(Boolean);
 const isAdmin = req => !!req.session.user && adminIds().includes(req.session.user.id);
 const requireLogin = (req,res,next) => req.session.user ? next() : res.status(401).json({error:"กรุณาเข้าสู่ระบบด้วย Discord"});
 const requireAdmin = (req,res,next) => isAdmin(req) ? next() : res.status(403).json({error:"เฉพาะแอดมินเท่านั้น"});
