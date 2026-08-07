@@ -61,8 +61,7 @@ if (count.c === 0) {
   for (const product of products) {
     add.run(...product);
   }
-}name,ame,description,price,constminIds = () => (process.env.ADMIN_DISCORD_IDS||"").split(",").map(x=>x.trim()).filter(Boolean);
-const isAdmin = req => !!req.session.user && adminIds().includes(req.session.user.id);
+}name,name,description,price,constminIds = () => (process.env.ADMIN_DISCORD_IDS||"").split(",").map(x=>x.trim()).filter(Boolean);const isAdmin = req => !!req.session.user && adminIds().includes(req.session.user.id);
 const requireLogin = (req,res,next) => req.session.user ? next() : res.status(401).json({error:"กรุณาเข้าสู่ระบบด้วย Discord"});
 const requireAdmin = (req,res,next) => isAdmin(req) ? next() : res.status(403).json({error:"เฉพาะแอดมินเท่านั้น"});
 
