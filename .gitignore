@@ -1,0 +1,11 @@
+# Node modules
+node_modules/
+
+# Environment file
+.env
+
+# SQLite DB
+rinny-shop.db
+
+# Logs
+npm-debug.log
