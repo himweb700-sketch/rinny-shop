@@ -1,6 +1,6 @@
 <!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rinny Shop Admin 🌷</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Noto Sans Thai",sans-serif;color:#503746;background:linear-gradient(135deg,#fff4fa,#eefaff)}.wrap{max-width:1100px;margin:auto;padding:20px[...]
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Noto Sans Thai",sans-serif;color:#503746;background:linear-gradient(135deg,#fff4fa,#eefaff)}.wrap{max-width:1100px;margin:auto;padding:20px}
 </style></head><body><main class="wrap"><header class="top"><div class="logo">🐱</div><div><b>Rinny Shop</b><br><small>Admin Dashboard 🌷</small></div><div class="spacer"></div><a class="btn blue" href="/">ไปที่ร้าน</a></header>
 <section class="cards"><div class="stat">🛍️<div class="num" id="orders">-</div><div class="muted">ออเดอร์</div></div><div class="stat">💰<div class="num" id="sales">-</div><div class="muted">ยอดขาย</div></div><div class="stat">👥<div class="num" id="customers">-</div><div class="muted">ลูกค้า</div></div><div class="stat">⏳<div class="num" id="pending">-</div><div class="muted">รอจ่าย</div></div></section>
 <div class="layout"><section class="panel"><h2>🧾 ออเดอร์ล่าสุด</h2><div id="orderList">กำลังโหลด...</div></section>
@@ -32,14 +32,29 @@ async function logout(){await api('/auth/logout',{method:'POST'});location.href=
         break;
       }
     }
-    setTimeout(()=>{
-      const inviteBtn=document.getElementById('inviteBot');
-      if(inviteBtn)inviteBtn.addEventListener('click',()=>{
-        const perms=document.getElementById('botPerms').value||'0';
-        window.open('/invite/bot?permissions='+encodeURIComponent(perms),'_blank');
-      });
-    },200);
-  }catch(e){console.error('invite-ui',e)}
+-    setTimeout(()=>{
+-      const inviteBtn=document.getElementById('inviteBot');
+-      if(inviteBtn)inviteBtn.addEventListener('click',()=>{
+-        const perms=document.getElementById('botPerms').value||'0';
+-        window.open('/invite/bot?permissions='+encodeURIComponent(perms),'_blank');
+-      });
+-    },200);
++    function attachInviteHandler(){
++      const inviteBtn=document.getElementById('inviteBot');
++      if(inviteBtn){
++        inviteBtn.addEventListener('click',()=>{
++          const perms=document.getElementById('botPerms').value||'0';
++          window.open('/invite/bot?permissions='+encodeURIComponent(perms),'_blank');
++        });
++      }
++    }
++
++    if(document.readyState==='loading'){
++      document.addEventListener('DOMContentLoaded',attachInviteHandler);
++    } else {
++      attachInviteHandler();
++    }
+   }catch(e){console.error('invite-ui',e)}
 })();
 
 init();
