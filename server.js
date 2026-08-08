@@ -194,4 +194,6 @@ app.get("/invite/bot", (req, res) => {
   res.redirect(inviteUrl);
 });
 
-app.listen(PORT, () => console.log(`Rinny Shop running at http://localhost:${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`Rinny Shop running on port ${PORT}`)
+);
