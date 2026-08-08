@@ -178,4 +178,20 @@ app.get("/api/admin/stats", requireAdmin, (req, res) => {
   res.json({ orders, sales, customers, pending });
 });
 
+// Invite bot to guild (Discord OAuth2 invite URL)
+app.get("/invite/bot", (req, res) => {
+  const clientId = process.env.DISCORD_CLIENT_ID || "";
+  if (!clientId) {
+    return res.status(500).send("DISCORD_CLIENT_ID is not configured on the server.");
+  }
+  const permissions = String(req.query.permissions || process.env.DISCORD_BOT_PERMISSIONS || "0");
+  const params = new URLSearchParams({
+    client_id: clientId,
+    scope: "bot applications.commands",
+    permissions
+  });
+  const inviteUrl = "https://discord.com/oauth2/authorize?" + params.toString();
+  res.redirect(inviteUrl);
+});
+
 app.listen(PORT, () => console.log(`Rinny Shop running at http://localhost:${PORT}`));

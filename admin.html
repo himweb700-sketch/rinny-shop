@@ -1,19 +1,46 @@
 <!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rinny Shop Admin 🌷</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Noto Sans Thai",sans-serif;color:#503746;background:linear-gradient(135deg,#fff4fa,#eefaff)}.wrap{max-width:1100px;margin:auto;padding:20px 16px 45px}.top,.panel,.stat{background:#fff;border:2px solid #f0dce6;border-radius:24px;box-shadow:0 9px 25px #9e70851c}.top{padding:14px 18px;display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,#ffafd0,#bce8ff)}.spacer{margin-left:auto}.btn{border:0;border-radius:14px;padding:10px 14px;font-weight:900;cursor:pointer;background:#ff91bb;color:#fff}.btn.blue{background:#8ccdf5}.btn.white{background:#fff0f6;color:#6b4557}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:18px 0}.stat{padding:17px}.num{font-size:25px;font-weight:1000}.muted{color:#8a7680}.layout{display:grid;grid-template-columns:1.25fr .9fr;gap:16px}.panel{padding:19px}.panel h2{margin-top:0}.order{background:#fff7fa;border-radius:17px;padding:13px;margin:9px 0;display:flex;gap:10px;align-items:center}.grow{flex:1}.pill{padding:6px 9px;border-radius:999px;background:#fff0a9;font-size:12px;font-weight:900}.field{width:100%;padding:10px;border:2px solid #eadde4;border-radius:12px;margin:5px 0 10px}.product{background:#fff7fa;border-radius:18px;padding:13px;margin:9px 0}.row{display:flex;gap:8px}.row>*{flex:1}@media(max-width:850px){.cards{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}}@media(max-width:500px){.cards{grid-template-columns:1fr 1fr}.order{flex-wrap:wrap}}
-</style></head><body><main class="wrap"><header class="top"><div class="logo">🐱</div><div><b>Rinny Shop</b><br><small>Admin Dashboard 🌷</small></div><div class="spacer"></div><a class="btn blue" href="/" style="text-decoration:none">หน้าร้าน</a><button class="btn white" onclick="logout()">ออก</button></header><h1>สวัสดีแอดมินริน 💗</h1>
-<section class="cards"><div class="stat">🛍️<div class="num" id="orders">-</div><div class="muted">ออเดอร์</div></div><div class="stat">💰<div class="num" id="sales">-</div><div class="muted">ยอดขาย</div></div><div class="stat">👥<div class="num" id="customers">-</div><div class="muted">ลูกค้า</div></div><div class="stat">📦<div class="num" id="pending">-</div><div class="muted">รอดำเนินการ</div></div></section>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Noto Sans Thai",sans-serif;color:#503746;background:linear-gradient(135deg,#fff4fa,#eefaff)}.wrap{max-width:1100px;margin:auto;padding:20px[...]
+</style></head><body><main class="wrap"><header class="top"><div class="logo">🐱</div><div><b>Rinny Shop</b><br><small>Admin Dashboard 🌷</small></div><div class="spacer"></div><a class="btn blue" href="/">ไปที่ร้าน</a></header>
+<section class="cards"><div class="stat">🛍️<div class="num" id="orders">-</div><div class="muted">ออเดอร์</div></div><div class="stat">💰<div class="num" id="sales">-</div><div class="muted">ยอดขาย</div></div><div class="stat">👥<div class="num" id="customers">-</div><div class="muted">ลูกค้า</div></div><div class="stat">⏳<div class="num" id="pending">-</div><div class="muted">รอจ่าย</div></div></section>
 <div class="layout"><section class="panel"><h2>🧾 ออเดอร์ล่าสุด</h2><div id="orderList">กำลังโหลด...</div></section>
-<section class="panel"><h2>🎀 จัดการสินค้า</h2><input class="field" id="name" placeholder="ชื่อสินค้า"><input class="field" id="desc" placeholder="รายละเอียด"><div class="row"><input class="field" id="price" type="number" placeholder="ราคา"><input class="field" id="icon" placeholder="อีโมจิ" value="✨"></div><button class="btn" onclick="addProduct()" style="width:100%">＋ เพิ่มสินค้า</button><hr style="border:0;border-top:2px dashed #f0dce6;margin:18px 0"><div id="products"></div></section></div></main>
+<section class="panel"><h2>🎀 จัดการสินค้า</h2><input class="field" id="name" placeholder="ชื่อสินค้า"><input class="field" id="desc" placeholder="รายละเอียด"><input class="field" id="price" placeholder="ราคา"><input class="field" id="icon" placeholder="ไอคอน (เช่น ✨)"><button class="btn" onclick="addProduct()">เพิ่มสินค้า</button><div id="products">กำลังโหลด...</div>
+</section>
+</div>
 <script>
 async function api(u,o){const r=await fetch(u,o);const d=await r.json();if(!r.ok)throw Error(d.error);return d}
-async function init(){const m=await api("/api/me");if(!m.admin){alert("หน้านี้สำหรับแอดมินเท่านั้น 😾");location.href="/";return}await stats();await orders();await products()}
+async function init(){const m=await api("/api/me");if(!m.admin){alert("หน้านี้สำหรับแอดมินเท่านั้น 😾");location.href="/";return}await stats();await orders();await products();document.querySelector('#logout')?.addEventListener('click',logout)}
 async function stats(){const s=await api("/api/admin/stats");for(const [k,v] of Object.entries(s)){const e=document.querySelector("#"+k);if(e)e.textContent=k==="sales"?Number(v).toLocaleString()+" ฿":v}}
-async function orders(){const os=await api("/api/admin/orders");document.querySelector("#orderList").innerHTML=os.length?os.map(o=>`<div class="order"><div class="grow"><b>#${o.id} ${o.product_name}</b><br><small>${o.username} • ฿${Number(o.price).toLocaleString()}</small></div><select class="field" style="margin:0;max-width:145px" onchange="status(${o.id},this.value)">${["pending","paid","processing","completed","cancelled"].map(s=>`<option ${s===o.status?"selected":""} value="${s}">${label(s)}</option>`).join("")}</select></div>`).join(""):"ยังไม่มีออเดอร์"}
+async function orders(){const os=await api("/api/admin/orders");document.querySelector("#orderList").innerHTML=os.length?os.map(o=>`<div class="order"><div class="grow"><b>#${o.id} ${o.product_name}</b><div class="muted">โดย ${o.username} — ${new Date(o.created_at).toLocaleString()}</div></div><div class="status"><select onchange="status(${o.id},this.value)"><option value="pending">รอตรวจสอบ</option><option value="paid">ชำระแล้ว</option><option value="processing">กำลังดำเนินการ</option><option value="completed">เสร็จแล้ว</option><option value="cancelled">ยกเลิก</option></select></div></div>`).join(''):'ยังไม่มีออเดอร์'}
 async function status(id,s){await api("/api/admin/orders/"+id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:s})});stats()}
-async function products(){const ps=await api("/api/products");document.querySelector("#products").innerHTML=ps.map(p=>`<div class="product"><div class="row"><input class="field" id="n${p.id}" value="${esc(p.name)}"><input class="field" id="p${p.id}" type="number" value="${p.price}"></div><input class="field" id="d${p.id}" value="${esc(p.description)}"><div class="row"><button class="btn" onclick="edit(${p.id})">💾 บันทึก</button><button class="btn white" onclick="del(${p.id})">🗑️ ลบ</button></div></div>`).join("")}
-async function addProduct(){const body={name:$("#name").value.trim(),description:$("#desc").value.trim(),price:Number($("#price").value),icon:$("#icon").value||"✨"};if(!body.name)return alert("ใส่ชื่อสินค้าก่อนน้า 💕");await api("/api/admin/products",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});["name","desc","price"].forEach(id=>$("#"+id).value="");products()}
-async function edit(id){await api("/api/admin/products/"+id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:$("#n"+id).value,description:$("#d"+id).value,price:Number($("#p"+id).value)})});alert("บันทึกแล้ว 💗");products()}
-async function del(id){if(confirm("ลบสินค้านี้ไหม 🥺")){await api("/api/admin/products/"+id,{method:"DELETE"});products()}}
-async function logout(){await api("/auth/logout",{method:"POST"});location.href="/"}function label(s){return({pending:"รอตรวจสอบ",paid:"ชำระแล้ว",processing:"กำลังทำ",completed:"เสร็จแล้ว",cancelled:"ยกเลิก"})[s]}function $(s){return document.querySelector(s)}function esc(s){return String(s).replace(/"/g,"&quot;")}init();
+async function products(){const ps=await api("/api/products");document.querySelector("#products").innerHTML=ps.map(p=>`<div class="product"><div class="row"><input class="field" id="n${p.id}" value="${p.name}"></div><div class="row"><input class="field" id="d${p.id}" value="${p.description}"></div><div class="row"><input class="field" id="pr${p.id}" value="${p.price}"></div><div class="row"><input class="field" id="ic${p.id}" value="${p.icon}"></div><div class="row"><button class="btn" onclick="edit(${p.id})">บันทึก</button> <button class="btn" onclick="del(${p.id})">ลบ</button></div></div>`).join('')}
+async function addProduct(){const body={name:document.querySelector('#name').value.trim(),description:document.querySelector('#desc').value.trim(),price:Number(document.querySelector('#price').value),icon:document.querySelector('#icon').value||"✨"};if(!body.name)return alert('ต้องใส่ชื่อสินค้า');await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.querySelector('#name').value='';products()}
+async function edit(id){await api('/api/admin/products/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.querySelector('#n'+id).value,description:document.querySelector('#d'+id).value,price:Number(document.querySelector('#pr'+id).value),icon:document.querySelector('#ic'+id).value})});products()}
+async function del(id){if(confirm('ลบสินค้านี้ไหม 🥺')){await api('/api/admin/products/'+id,{method:'DELETE'});products()}}
+async function logout(){await api('/auth/logout',{method:'POST'});location.href='/'}function label(s){return({pending:"รอตรวจสอบ",paid:"ชำระแล้ว",processing:"กำลังดำเนินการ",completed:"เสร็จแล้ว",cancelled:"ยกเลิก"}[s]||s)}
+
+// inject invite UI into the admin panel (avoids modifying large minified HTML directly)
+(function(){
+  try{
+    const panels=document.querySelectorAll('.panel');
+    for(const p of panels){
+      const h=p.querySelector('h2');
+      if(h&&h.textContent.includes('จัดการสินค้า')){
+        const div=document.createElement('div');
+        div.innerHTML = `<div style="margin-top:12px;"><label for="botPerms">Permissions:</label> <select id="botPerms"><option value="0">ไม่มีสิทธิพิเศษ (0)</option><option value="1024">Manage Channels (1024)</option><option value="8">Administrator (8)</option><option value="2147483647">Full (2147483647)</option></select> <button id="inviteBot" class="btn">เชิญบอทเข้า Discord Server</button></div>`;
+        p.appendChild(div);
+        break;
+      }
+    }
+    setTimeout(()=>{
+      const inviteBtn=document.getElementById('inviteBot');
+      if(inviteBtn)inviteBtn.addEventListener('click',()=>{
+        const perms=document.getElementById('botPerms').value||'0';
+        window.open('/invite/bot?permissions='+encodeURIComponent(perms),'_blank');
+      });
+    },200);
+  }catch(e){console.error('invite-ui',e)}
+})();
+
+init();
 </script></body></html>
