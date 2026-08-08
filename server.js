@@ -190,10 +190,13 @@ app.get("/invite/bot", (req, res) => {
     return res.status(500).send("DISCORD_CLIENT_ID is not configured on the server.");
   }
 
-  // Server-side validation for permissions: must be a non-negative integer
-  const rawPerms = req.query.permissions ?? process.env.DISCORD_BOT_PERMISSIONS ?? "0";
-  const perms = Number.parseInt(String(rawPerms), 10);
-  if (!Number.isFinite(perms) || Number.isNaN(perms) || perms < 0) {
+  // Server-side validation for permissions: must be a non-negative integer (strict digits only)
+  const rawPerms = String(req.query.permissions ?? process.env.DISCORD_BOT_PERMISSIONS ?? "0").trim();
+  if (!/^\d+$/.test(rawPerms)) {
+    return res.status(400).json({ error: "Invalid permissions" });
+  }
+  const perms = Number(rawPerms);
+  if (!Number.isInteger(perms) || perms < 0) {
     return res.status(400).json({ error: "Invalid permissions" });
   }
 
