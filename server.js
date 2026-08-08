@@ -15,8 +15,13 @@ const PORT = Number(process.env.PORT || 3000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (index.html, admin.html, account.html, etc.)
-app.use(express.static(__dirname));
+// Serve only public HTML files explicitly to avoid exposing repository files (.env, server.js, etc.)
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+app.get("/admin.html", (req, res) => res.sendFile(path.join(__dirname, "admin.html")));
+app.get("/account.html", (req, res) => res.sendFile(path.join(__dirname, "account.html")));
+
+// Serve assets (if you have a public/ directory) under /static
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || "dev-only-change-me",
@@ -184,11 +189,18 @@ app.get("/invite/bot", (req, res) => {
   if (!clientId) {
     return res.status(500).send("DISCORD_CLIENT_ID is not configured on the server.");
   }
-  const permissions = String(req.query.permissions || process.env.DISCORD_BOT_PERMISSIONS || "0");
+
+  // Server-side validation for permissions: must be a non-negative integer
+  const rawPerms = req.query.permissions ?? process.env.DISCORD_BOT_PERMISSIONS ?? "0";
+  const perms = Number.parseInt(String(rawPerms), 10);
+  if (!Number.isFinite(perms) || Number.isNaN(perms) || perms < 0) {
+    return res.status(400).json({ error: "Invalid permissions" });
+  }
+
   const params = new URLSearchParams({
     client_id: clientId,
     scope: "bot applications.commands",
-    permissions
+    permissions: String(perms)
   });
   const inviteUrl = "https://discord.com/oauth2/authorize?" + params.toString();
   res.redirect(inviteUrl);
