@@ -1,4 +1,4 @@
-npm - test invite
+name: CI - test invite
 
 on:
   push:
