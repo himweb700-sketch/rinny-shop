@@ -1,4 +1,4 @@
-name: CI - test invite
+npm - test invite
 
 on:
   push:
@@ -22,4 +22,4 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
