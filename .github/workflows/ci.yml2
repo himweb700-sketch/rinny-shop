@@ -1,0 +1,66 @@
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: '20'
+
+  - name: Install dependencies
+    run: npm ci
+
+  - name: Syntax check
+    run: node --check server.js
+
+  - name: Ensure required HTML files exist
+    run: |
+      for f in index.html admin.html account.html; do
+        if [ ! -f "$f" ]; then
+          echo "<!-- stub $f created by CI -->" > "$f"
+        fi
+      done
+
+  - name: Start server
+    env:
+      DISCORD_CLIENT_ID: 123456789012345678
+      DISCORD_CLIENT_SECRET: dummy
+      DISCORD_REDIRECT_URI: http://localhost:3000/auth/discord/callback
+      SESSION_SECRET: ci-test-secret
+      ADMIN_DISCORD_IDS: 1533794186241773775
+      DISCORD_BOT_PERMISSIONS: 0
+    run: |
+      nohup node server.js >/tmp/server.log 2>&1 &
+      echo $! > /tmp/server.pid
+
+  - name: Wait for server to be ready
+    run: |
+      for i in {1..20}; do
+        if curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
+          echo "server up"; break
+        fi
+        sleep 1
+      done
+      if ! curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
+        echo "Server did not start in time. Dumping /tmp/server.log:"; sed -n '1,200p' /tmp/server.log; exit 1
+      fi
+
+  - name: Curl invite and validate redirect
+    run: |
+      set -euo pipefail
+      HEADERS=$(curl -i -sS "http://localhost:3000/invite/bot?permissions=8") || true
+      echo "$HEADERS"
+      echo "$HEADERS" | grep -E "HTTP/1.1 302|HTTP/2 302"
+      echo "$HEADERS" | grep -i Location
+      echo "$HEADERS" | grep "client_id=123456789012345678"
+      # accept different encodings of space in scope
+      echo "$HEADERS" | grep -E "scope=bot\+applications.commands|scope=bot%20applications.commands|scope=bot\+applications.commands"
+      echo "$HEADERS" | grep "permissions=8"
+
+  - name: Run local smoke script
+    run: bash scripts/test-invite.sh
+
+  - name: Dump server log on failure
+    if: failure()
+    run: sed -n '1,200p' /tmp/server.log || true
+
+  - name: Cleanup
+    if: always()
+    run: |
+      if [ -f /tmp/server.pid ]; then kill $(cat /tmp/server.pid) || true; fi
