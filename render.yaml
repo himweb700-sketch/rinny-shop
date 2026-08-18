@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: rinny-shop
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/me
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: SESSION_SECRET
+        scope: run_and_build
+        sync: false
+      - key: DISCORD_CLIENT_ID
+        scope: run_and_build
+        sync: false
+      - key: DISCORD_CLIENT_SECRET
+        scope: run_and_build
+        sync: false
+      - key: DISCORD_REDIRECT_URI
+        scope: run_and_build
+        sync: false
+      - key: ADMIN_DISCORD_IDS
+        scope: run_and_build
+        sync: false
+      - key: SHOP_DISCORD_INVITE
+        scope: run_and_build
+        sync: false
+      - key: DISCORD_BOT_PERMISSIONS
+        value: "0"
