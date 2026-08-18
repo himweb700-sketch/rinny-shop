@@ -12,6 +12,9 @@ const app = express();
 const db = new Database("rinny-shop.db");
 const PORT = Number(process.env.PORT || 3000);
 
+// Production-safe cookie settings
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,7 +25,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "dev-only-change-me",
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, sameSite: "lax", secure: false, maxAge: 1000 * 60 * 60 * 24 * 7 }
+  cookie: { 
+    httpOnly: true, 
+    sameSite: "lax", 
+    secure: isProduction, // Use HTTPS only in production
+    maxAge: 1000 * 60 * 60 * 24 * 7 
+  }
 }));
 
 db.exec(`
@@ -193,6 +201,9 @@ app.get("/invite/bot", (req, res) => {
   const inviteUrl = "https://discord.com/oauth2/authorize?" + params.toString();
   res.redirect(inviteUrl);
 });
+
+// Health check for Render
+app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 app.listen(PORT, "0.0.0.0", () =>
   console.log(`Rinny Shop running on port ${PORT}`)

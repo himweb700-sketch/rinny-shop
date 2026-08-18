@@ -49,7 +49,7 @@
 4. คัดลอกตัวเลขที่เป็น ID ของคุณ (หรือ คลิกขวา profile → Copy User ID)
 5. จดไว้
 
-### **ขั้นตอนที่ 5: เปิด GitHub** 
+### **ขั้นต���นที่ 5: เปิด GitHub**
 
 1. เข้า https://github.com/himweb700-sketch/rinny-shop
 2. ถ้ายังไม่ได้ fork ให้คลิก **Fork** → **Create fork**
@@ -186,7 +186,7 @@ openssl rand -base64 32
 1. ไปแท็บ **Logs**
 2. อ่าน error message
 3. ตรวจสอบ:
-   - ` package.json` มี dependencies ครบไหม
+   - `package.json` มี dependencies ครบไหม
    - `server.js` syntax ถูกไหม
    - Environment Variables ครบไหม
 4. คลิก **Manual Deploy** → **Deploy latest commit**
