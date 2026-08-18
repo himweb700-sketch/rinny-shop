@@ -1,11 +1,24 @@
-# Node modules
+# Dependencies
 node_modules/
-
-# Environment file
-.env
-
-# SQLite DB
-rinny-shop.db
-
-# Logs
 npm-debug.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

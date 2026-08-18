@@ -45,11 +45,11 @@
 
 1. เปิด Discord
 2. ตั้งค่า → **Advanced** → เปิด **Developer Mode** ✓
-3. ไปอีก Discord Server แล้วพิมพ์: `\\@yourself` (แล้วกด Enter)
+3. ไปอีก Discord Server แล้วพิมพ์: `\@yourself` (แล้วกด Enter)
 4. คัดลอกตัวเลขที่เป็น ID ของคุณ (หรือ คลิกขวา profile → Copy User ID)
 5. จดไว้
 
-### **ขั้นต���นที่ 5: เปิด GitHub**
+### **ขั้นตอนที่ 5: เปิด GitHub**
 
 1. เข้า https://github.com/himweb700-sketch/rinny-shop
 2. ถ้ายังไม่ได้ fork ให้คลิก **Fork** → **Create fork**
