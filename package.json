@@ -12,10 +12,16 @@
     "start": "node server.js",
     "dev": "node server.js"
   },
-  "keywords": ["discord", "shop", "oauth", "ecommerce"],
+  "keywords": [
+    "discord",
+    "shop",
+    "oauth",
+    "ecommerce"
+  ],
   "author": "Rinny",
   "license": "MIT",
   "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
     "better-sqlite3": "^11.10.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
